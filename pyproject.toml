@@ -25,13 +25,14 @@ classifiers = [
 ]
 dependencies = [
   "click",
+  "requests",
 ]
 dynamic = ["version"]
 
 [project.urls]
-Documentation = "https://github.com/unknown/gitignore-builder#readme"
-Issues = "https://github.com/unknown/gitignore-builder/issues"
-Source = "https://github.com/unknown/gitignore-builder"
+Documentation = "https://github.com/Hrissimir/gitignore-builder#readme"
+Issues = "https://github.com/Hrissimir/gitignore-builder/issues"
+Source = "https://github.com/Hrissimir/gitignore-builder"
 
 [project.scripts]
 gitignore-builder = "gitignore_builder.cli:gitignore_builder"
