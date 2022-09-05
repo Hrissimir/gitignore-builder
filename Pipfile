@@ -1,0 +1,15 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+click = "*"
+requests = "*"
+
+[dev-packages]
+coverage = {extras = ["toml"], version = "*"}
+pytest = "*"
+pytest-cov = "*"
+hatch = "*"
+gitignore-builder = {editable = true, path = "."}
