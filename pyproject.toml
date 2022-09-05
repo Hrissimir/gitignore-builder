@@ -42,6 +42,7 @@ path = "src/gitignore_builder/__about__.py"
 
 [tool.hatch.envs.default]
 dependencies = [
+  "coverage[toml]",
   "pytest",
   "pytest-cov",
 ]
