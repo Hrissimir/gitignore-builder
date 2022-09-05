@@ -8,29 +8,10 @@
 
 **Table of Contents**
 
-- [Installation](#installation)
 - [Usage](#usage)
+- [Installation](#installation)
+- [Changelog](#changelog)
 - [License](#license)
-
------
-
-## Installation
-
-```shell
-# From PyPI
-pip install gitignore-builder
-
-# From TestPyPI
-pip install --index-url https://test.pypi.org/simple/ gitignore-builder
-
-# From TestPyPI when facing dependency resolution issues with previous command
-pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/ gitignore-builder
-
-# From source
-git clone git@github.com:Hrissimir/gitignore-builder.git
-cd gitignore-builder
-pip install .
-```
 
 -----
 
@@ -49,6 +30,38 @@ Options:
   --version   Show the version and exit.
   -h, --help  Show this message and exit.
 ```
+
+-----
+
+## Installation
+
+Installing with Pip
+
+```shell
+# from PyPI 
+pip install gitignore-builder
+
+# from source
+git clone git@github.com:Hrissimir/gitignore-builder.git
+cd gitignore-builder
+pip install .
+```
+
+-----
+
+## Changelog
+
+#### Version 0.1.0
+
+- Added basic implementation of the CLI command.
+- Initial PyPI publication.
+
+#### Version 0.0.1
+
+- Generated project skeleton
+- Added README.md
+- Added CONTRIBUTING.md
+- Configured the GitHub CI/CD pipeline.
 
 -----
 
