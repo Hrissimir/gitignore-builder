@@ -73,9 +73,24 @@ keyring set https://upload.pypi.org/legacy/ __token__  # for Main-PyPI
 Publish the project distributions:
 
 ```shell
-hatch publish --repo test  # to Test-PyPI
-hatch publish --repo main  # to Main-PyPI
-hatch publish  # to Main-PyPI
+# using hatch
+hatch publish --repo test  # Test-PyPI
+hatch publish --repo main  # Main-PyPI
+hatch publish  # Main-PyPI
+
+# using twine
+twine upload --repository testpypi dist/*  # Test-PyPI
+twine upload dist/*  # Main-PyPI
+```
+
+Install from Test-PyPI:
+
+```shell
+# use this inside newly-created env
+pip install --index-url https://test.pypi.org/simple/ gitignore-builder
+
+# use this if there are issues with resolving the dependencies
+pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/ gitignore-builder
 ```
 
 ## License
