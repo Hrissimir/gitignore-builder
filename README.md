@@ -51,6 +51,9 @@ pip install .
 
 ## Changelog
 
+#### Version 0.1.1
+- Bugfix
+
 #### Version 0.1.0
 
 - Added basic implementation of the CLI command.

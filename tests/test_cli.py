@@ -62,6 +62,10 @@ class MainCliTest(CliCommandTestBase):
     def command(self):
         return cli.gitignore_builder
 
-    def test_no_args_call(self):
-        self.invoke([])
-        self.assertIn("Hello world!", self.result.output)
+    def test_help_option_call_short_name(self):
+        self.invoke(["-h"])
+        self.assertIn("Usage: gitignore-builder {java|python} [out]", self.result.output)
+
+    def test_help_option_call_full_name(self):
+        self.invoke(["--help"])
+        self.assertIn("Usage: gitignore-builder {java|python} [out]", self.result.output)
