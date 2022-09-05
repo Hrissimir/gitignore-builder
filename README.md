@@ -9,13 +9,48 @@
 **Table of Contents**
 
 - [Installation](#installation)
+- [Usage](#usage)
 - [License](#license)
+
+-----
 
 ## Installation
 
-```console
+```shell
+# From PyPI
 pip install gitignore-builder
+
+# From TestPyPI
+pip install --index-url https://test.pypi.org/simple/ gitignore-builder
+
+# From TestPyPI when facing dependency resolution issues with previous command
+pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/ gitignore-builder
+
+# From source
+git clone git@github.com:Hrissimir/gitignore-builder.git
+cd gitignore-builder
+pip install .
 ```
+
+-----
+
+## Usage
+
+```console
+Usage: gitignore-builder {java|python} [out]
+
+  Generate language-specific .gitignore contents and send them to output.
+
+  Args:
+
+      out: Output target. [default: print to stdout]
+
+Options:
+  --version   Show the version and exit.
+  -h, --help  Show this message and exit.
+```
+
+-----
 
 ## License
 
