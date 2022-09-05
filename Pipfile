@@ -11,5 +11,7 @@ requests = "*"
 coverage = {extras = ["toml"], version = "*"}
 pytest = "*"
 pytest-cov = "*"
+keyring = "*"
+twine = "*"
 hatch = "*"
 gitignore-builder = {editable = true, path = "."}
