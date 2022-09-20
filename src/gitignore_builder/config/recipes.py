@@ -218,3 +218,11 @@ PYTHON_RECIPE = Recipe(
         "python"
     ]
 )
+
+ALL_RECIPES = Recipes(
+    [
+        ANDROID_RECIPE,
+        JAVA_RECIPE,
+        PYTHON_RECIPE
+    ]
+)
