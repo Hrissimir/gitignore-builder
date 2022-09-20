@@ -290,10 +290,9 @@ tags
 # Unittest and coverage
 htmlcov/*
 **/htmlcov/*
-test_results/*
-**/test_results/*
 .tox
 junit*.xml
+**/junit*.xml
 
 # Build and docs folder/files
 build/*
