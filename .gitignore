@@ -288,9 +288,11 @@ tags
 *.egg-info
 
 # Unittest and coverage
+**/htmlcov/*
 htmlcov/*
 .tox
 junit*.xml
+**/test_results/*
 
 # Build and docs folder/files
 build/*
