@@ -25,6 +25,7 @@ classifiers = [
 ]
 dependencies = [
   "platformdirs",
+  "PyYAML",
   "click",
   "requests",
 ]
@@ -44,6 +45,7 @@ path = "src/gitignore_builder/__about__.py"
 [tool.hatch.envs.default]
 dependencies = [
   "coverage[toml]",
+  "ddt",
   "pylint",
   "pytest",
   "pytest-cov",
