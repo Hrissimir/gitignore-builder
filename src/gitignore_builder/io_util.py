@@ -91,6 +91,12 @@ def write_text_to_file(text: str, file: Path):
     """Write text to file."""
 
     _log.info("Writing text to file: '%s'", file)
+
+    folder = file.parent
+    if not folder.exists():
+        _log.warning("Creating missing folder at: '%s'", folder)
+        folder.mkdir(parents=True, exist_ok=True)
+
     try:
         file_contents = text.encode(encoding="utf-8", errors="surrogateescape")
         file.write_bytes(file_contents)

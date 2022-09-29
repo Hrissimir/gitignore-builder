@@ -1,7 +1,11 @@
 """Unit-tests for the ``gitignore_builder.io_util`` module."""
+from abc import ABC
+from abc import abstractmethod
 from pathlib import Path
+from shutil import rmtree
 from tempfile import TemporaryDirectory
 from textwrap import dedent
+from typing import Optional
 from unittest import TestCase
 from unittest.mock import MagicMock
 from unittest.mock import patch
@@ -140,3 +144,56 @@ class ReadUrlAsTextTest(TestCase):
     def test_returns_none_in_case_of_error(self):
         url = "http://localhost:12345"
         self.assertIsNone(io_util.read_url_as_text(url))
+
+
+class TempDirTestBase(TestCase, ABC):
+    """Base class for unit-tests that use temp-dir."""
+
+    temp_dir_path: Optional[Path]
+
+    @abstractmethod
+    def setUp(self) -> None:
+        self.temp_dir = TemporaryDirectory()  # pylint: disable=consider-using-with
+        self.temp_dir_path = Path(self.temp_dir.name)
+
+    @abstractmethod
+    def tearDown(self) -> None:
+        try:
+            rmtree(self.temp_dir_path, ignore_errors=True)
+        except Exception:
+            pass
+
+        self.temp_dir_path = None
+        try:
+            self.temp_dir.cleanup()
+        except Exception:
+            pass
+
+        self.temp_dir = None
+
+
+class WriteTextToFileTest(TempDirTestBase):
+    """Unit-tests for the ``io_util.write_text_to_file`` method."""
+
+    def setUp(self) -> None:
+        super().setUp()
+
+    def tearDown(self) -> None:
+        super().tearDown()
+
+    def test_creates_parent_dir_if_missing(self):
+        folder = self.temp_dir_path / "missing_dir"
+        self.assertFalse(folder.exists())
+
+        text = ""
+        file = folder / "file.txt"
+        io_util.write_text_to_file(text, file)
+
+        self.assertTrue(folder.exists())
+
+    def test_writes_the_text_if_ok(self):
+        expected_text = "1234"
+        file = self.temp_dir_path / "file.txt"
+        io_util.write_text_to_file(expected_text, file)
+        actual_text = file.read_text(encoding="utf-8")
+        self.assertEqual(expected_text, actual_text)
