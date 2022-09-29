@@ -65,6 +65,10 @@ pip install .
 
 ## Changelog
 
+#### Version 1.0.1
+
+- Minor bugfix
+
 #### Version 1.0.0
 
 - Introduced the concepts of 'recipes' and 'templates'

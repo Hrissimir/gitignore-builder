@@ -6,7 +6,7 @@ from unittest.mock import patch
 
 import requests
 
-from abstract_tests import TempDirTestBase
+from .abstract_tests import TempDirTestBase
 from gitignore_builder import io_util
 
 

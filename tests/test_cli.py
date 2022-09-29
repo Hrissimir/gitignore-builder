@@ -3,7 +3,7 @@ import logging
 from unittest.mock import MagicMock
 from unittest.mock import patch
 
-from abstract_tests import CliCommandTestBase
+from .abstract_tests import CliCommandTestBase
 from gitignore_builder import cli
 
 _log = logging.getLogger(__name__)
