@@ -32,7 +32,7 @@ def print_config(ctx, param, value):  # pylint: disable=unused-argument
               callback=print_config,
               expose_value=False,
               is_eager=True,
-              help="Print app config-file paths.")
+              help="Print the location of app config files.")
 @click.argument("recipe",
                 type=click.Choice(datamodel.get_recipe_names()))
 @click.argument("output",
