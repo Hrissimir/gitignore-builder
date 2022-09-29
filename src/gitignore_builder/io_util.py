@@ -21,7 +21,7 @@ def format_data_to_yaml(data: dict) -> Optional[str]:
             sort_keys=False,
         )
     except Exception as e:
-        _log.error("Error while formatting data to YAML: '%s'", e)
+        _log.error("Error while formatting data to YAML! Details: '%s'", e)
         return None
 
 
@@ -35,20 +35,31 @@ def parse_data_from_yaml(text: str) -> Optional[dict]:
         return None
 
 
-def read_file_as_text(file: Path) -> str:
+def read_file_as_text(file: Path) -> Optional[str]:
     """Read text from file."""
 
     _log.debug("Reading text from file: '%s'", file)
-    data = file.read_bytes()
-    return data.decode(encoding="utf-8", errors="surrogateescape")
+    try:
+        data = file.read_bytes()
+        return data.decode(encoding="utf-8", errors="surrogateescape")
+    except Exception as e:
+        _log.error("Error while reading text from file: '%s'", e)
+        return None
 
 
-def read_file_as_data(file: Path) -> dict:
+def read_file_as_data(file: Path) -> Optional[dict]:
     """Parse and return data from YAML file."""
 
     _log.info("Reading data from file: '%s'", file)
     text = read_file_as_text(file)
+    if text is None:
+        _log.error("...FAILED! (could not read the file)")
+        return None
+
     data = parse_data_from_yaml(text)
+    if data is None:
+        _log.error("...FAILED! (could not parse the data)")
+
     _log.debug("...DONE!")
     return data
 
@@ -71,7 +82,7 @@ def read_url_as_text(url: str) -> Optional[str]:
         _log.info("...DONE!")
         return text
 
-    except Exception as e:  # pylint: disable=broad-except
+    except Exception as e:
         _log.error("...ERROR! Details: '%s'", e)
         return None
 
@@ -80,8 +91,13 @@ def write_text_to_file(text: str, file: Path):
     """Write text to file."""
 
     _log.info("Writing text to file: '%s'", file)
-    file_contents = text.encode(encoding="utf-8", errors="surrogateescape")
-    file.write_bytes(file_contents)
+    try:
+        file_contents = text.encode(encoding="utf-8", errors="surrogateescape")
+        file.write_bytes(file_contents)
+    except Exception as e:
+        _log.error("...ERROR! Details: '%s'", e)
+        raise
+
     _log.info("...DONE!")
 
 
