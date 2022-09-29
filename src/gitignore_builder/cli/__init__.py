@@ -1,61 +1,59 @@
+"""This module defines the app CLI entry point."""
 # SPDX-FileCopyrightText: 2022-present Hrissimir <hrisimir.dakov@gmail.com>
 #
 # SPDX-License-Identifier: MIT
+
 import click
-import requests
 
-from ..__about__ import __version__
-from ..builders.base_content_builder import BaseContentBuilder
+from gitignore_builder import builder
+from gitignore_builder import datamodel
 
-# pylint: disable=line-too-long
-SOURCES_BY_LANG = {
-    "java": [
-        "https://github.com/github/gitignore/raw/main/Java.gitignore",
-        "https://github.com/github/gitignore/raw/main/Gradle.gitignore",
-        "https://github.com/github/gitignore/raw/main/Global/Eclipse.gitignore",
-        "https://github.com/github/gitignore/raw/main/Global/JetBrains.gitignore",
-        "https://github.com/github/gitignore/raw/main/Global/JEnv.gitignore",
-        "https://github.com/github/gitignore/raw/main/Android.gitignore",
-        "https://github.com/github/gitignore/raw/main/Maven.gitignore",
-    ],
-    "python": [
-        "https://github.com/github/gitignore/raw/main/Python.gitignore",
-        "https://github.com/github/gitignore/raw/main/community/Python/JupyterNotebooks.gitignore",
-        "https://github.com/github/gitignore/raw/main/community/Python/Nikola.gitignore",
-        "https://github.com/github/gitignore/raw/main/Global/JetBrains.gitignore",
-        "https://github.com/pyscaffold/pyscaffold/raw/master/src/pyscaffold/templates/gitignore.template",
-    ],
+CONTEXT_SETTINGS = {
+    "help_option_names": ["-h", "--help"],
+    "show_default": True,
+    "terminal_width": 160,
+    "max_content_width": 160
 }
 
+datamodel.init()
 
-@click.command(options_metavar="")
-@click.version_option(version=__version__, prog_name='gitignore-builder')
-@click.help_option("-h", "--help")
-@click.argument("lang", type=click.Choice(["java", "python"]))
-@click.argument("out", metavar="[out]", type=click.File("w"), default="-")
-@click.pass_context
-def gitignore_builder(ctx: click.Context, lang, out):
-    """Generate language-specific .gitignore contents and send them to output.
 
-    Args:
+def print_config(ctx, param, value):  # pylint: disable=unused-argument
+    if not value or ctx.resilient_parsing:
+        return
+    click.echo(f"Recipes file: '{datamodel.get_recipes_file()}'")
+    click.echo(f"Templates file: '{datamodel.get_templates_file()}'")
+    ctx.exit()
 
-        out: Output target. [default: print to stdout]
-    """
 
-    click.echo('Hello world!')
+@click.command(context_settings=CONTEXT_SETTINGS, no_args_is_help=True)
+@click.option("-c", "--config",
+              is_flag=True,
+              callback=print_config,
+              expose_value=False,
+              is_eager=True,
+              help="Print app config-file paths.")
+@click.argument("recipe",
+                type=click.Choice(datamodel.get_recipe_names()))
+@click.argument("output",
+                type=click.File("w"),
+                default="-")
+def gitignore_builder(recipe, output):
+    """Generate .gitignore contents from recipe and write them to the output."""
 
-    gitignore = BaseContentBuilder()
+    click.echo(f"Building .gitignore contents using recipe: '{recipe}' ...")
 
-    with click.progressbar(SOURCES_BY_LANG[lang]) as source_urls:
-        for src in source_urls:
-            try:
-                with requests.get(src) as resp:
-                    contents = resp.text
-            except Exception as ex:  # pylint: disable=broad-except
-                click.echo(f"failed to get {src} due {ex}!", err=True)
-                continue
+    lines = []
 
-            gitignore.append_section(src, contents)
+    urls = list(datamodel.get_recipe_urls(recipe))
+    with click.progressbar(urls) as recipe_urls:
+        for url in recipe_urls:
+            title = f"source: {url}"
+            builder.append_url(lines, url, title)
 
-    result = str(gitignore)
-    click.echo(result, file=out)
+    text = "\n".join(lines)
+    click.echo("...done!")
+
+    click.echo(f"Writing the resulting .gitignore contents to: '{output}' ...")
+    click.echo(text, file=output)
+    click.echo("...done!")
