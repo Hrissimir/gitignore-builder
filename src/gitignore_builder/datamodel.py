@@ -16,15 +16,12 @@ _log.addHandler(logging.NullHandler())
 _DEFAULT_TEMPLATES = {
     "linux": [
         "https://github.com/github/gitignore/raw/main/Global/Linux.gitignore",
-        "https://www.toptal.com/developers/gitignore/api/linux",
     ],
     "macos": [
         "https://github.com/github/gitignore/raw/main/Global/macOS.gitignore",
-        "https://www.toptal.com/developers/gitignore/api/macos",
     ],
     "windows": [
         "https://github.com/github/gitignore/raw/main/Global/Windows.gitignore",
-        "https://www.toptal.com/developers/gitignore/api/windows",
     ],
     "android-studio": [
         "https://github.com/github/gitignore/raw/main/Android.gitignore",
@@ -44,15 +41,16 @@ _DEFAULT_TEMPLATES = {
     ],
     "pycharm": [
         "https://github.com/github/gitignore/raw/main/Global/JetBrains.gitignore",
-        "https://www.toptal.com/developers/gitignore/api/pycharm,pycharm+all,pycharm+iml,pydev",
+        "https://www.toptal.com/developers/gitignore/api/pycharm+all,pycharm+iml,pydev",
     ],
     "jupyter-notebooks": [
         "https://github.com/github/gitignore/raw/main/community/Python/JupyterNotebooks.gitignore",
-        "https://www.toptal.com/developers/gitignore/api/jupyternotebooks",
     ],
     "visual-studio": [
         "https://github.com/github/gitignore/raw/main/VisualStudio.gitignore",
-        "https://www.toptal.com/developers/gitignore/api/visualstudio,visualstudiocode",
+    ],
+    "visual-studio-code": [
+        "https://www.toptal.com/developers/gitignore/api/visualstudiocode",
     ],
     "java-lang": [
         "https://github.com/github/gitignore/raw/main/Java.gitignore",
@@ -69,7 +67,6 @@ _DEFAULT_TEMPLATES = {
         "https://github.com/github/gitignore/raw/main/Python.gitignore",
         "https://github.com/github/gitignore/raw/main/community/Python/Nikola.gitignore",
         "https://github.com/pyscaffold/pyscaffold/raw/master/src/pyscaffold/templates/gitignore.template",
-        "https://www.toptal.com/developers/gitignore/api/python,pythonvanilla,django,flask",
     ]
 }
 
@@ -91,6 +88,7 @@ _DEFAULT_RECIPES = {
         "eclipse",
         "netbeans",
         "intellij",
+        "visual-studio",
         "java-lang"
     ],
     "python": [
@@ -100,6 +98,7 @@ _DEFAULT_RECIPES = {
         "pycharm",
         "jupyter-notebooks",
         "visual-studio",
+        "visual-studio-code",
         "python-lang"
     ]
 }
