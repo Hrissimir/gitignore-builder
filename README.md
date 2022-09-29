@@ -17,18 +17,32 @@
 
 ## Usage
 
+### CLI command's 'help' output:
+
 ```console
-Usage: gitignore-builder {java|python} [out]
+Usage: gitignore-builder [OPTIONS] {android|java|python} [OUTPUT]
 
-  Generate language-specific .gitignore contents and send them to output.
-
-  Args:
-
-      out: Output target. [default: print to stdout]
+  Generate .gitignore contents from recipe and write them to the output.
 
 Options:
-  --version   Show the version and exit.
-  -h, --help  Show this message and exit.
+  -c, --config  Print the location of app config files.
+  -h, --help    Show this message and exit.
+```
+
+### Sample CLI command invocations
+
+```shell
+# print the command help description
+gitignore-builder --help
+
+# print absolute paths to the app config files
+gitignore-builder --config
+
+# generate and print .gitignore file contents
+gitignore-builder java
+
+# generate and write the contents to '.gitignore' file in current dir
+gitignore-builder python .gitignore
 ```
 
 -----
@@ -51,8 +65,16 @@ pip install .
 
 ## Changelog
 
-#### Version 0.1.1
-- Bugfix
+#### Version 1.0.0
+
+- Introduced the concepts of 'recipes' and 'templates'
+- Implemented usage of recipes.yaml and templates.yaml
+    - Created in per-user app-config dir upon first usage
+    - Editable by the user to provide extra/custom values
+- Implemented support for printing paths to the app data-files
+- Improved of the bundled lists of templates and recipes
+- Improved CLI command help-description.
+- Better unit-tests coverage
 
 #### Version 0.1.0
 
