@@ -41,7 +41,9 @@ def read_file_as_text(file: Path) -> Optional[str]:
     _log.debug("Reading text from file: '%s'", file)
     try:
         data = file.read_bytes()
-        return data.decode(encoding="utf-8", errors="surrogateescape")
+        text = data.decode(encoding="utf-8", errors="surrogateescape")
+        _log.debug("...DONE!")
+        return text
     except Exception as e:
         _log.error("Error while reading text from file: '%s'", e)
         return None
@@ -59,8 +61,9 @@ def read_file_as_data(file: Path) -> Optional[dict]:
     data = parse_data_from_yaml(text)
     if data is None:
         _log.error("...FAILED! (could not parse the data)")
+        return None
 
-    _log.debug("...DONE!")
+    _log.info("...DONE!")
     return data
 
 
@@ -79,6 +82,7 @@ def read_url_as_text(url: str) -> Optional[str]:
     try:
         with requests.get(url, allow_redirects=True, timeout=10) as response:
             text = response.text
+
         _log.info("...DONE!")
         return text
 

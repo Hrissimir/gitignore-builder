@@ -1,17 +1,12 @@
 """Unit-tests for the ``gitignore_builder.io_util`` module."""
-from abc import ABC
-from abc import abstractmethod
-from pathlib import Path
-from shutil import rmtree
-from tempfile import TemporaryDirectory
 from textwrap import dedent
-from typing import Optional
 from unittest import TestCase
 from unittest.mock import MagicMock
 from unittest.mock import patch
 
 import requests
 
+from abstract_tests import TempDirTestBase
 from gitignore_builder import io_util
 
 
@@ -59,31 +54,40 @@ class ParseDataFromYamlTest(TestCase):
         self.assertEqual(expected, actual)
 
 
-class ReadFileAsTextTest(TestCase):
+class ReadFileAsTextTest(TempDirTestBase):
     """Unit-tests for the ``io_util.read_file_as_text`` method."""
+
+    def setUp(self) -> None:
+        super().setUp()
+
+    def tearDown(self) -> None:
+        super().tearDown()
 
     def test_returns_none_on_error(self):
         self.assertIsNone(io_util.read_file_as_text(None))  # noqa
 
     def test_returns_text_if_ok(self):
+        file = self.temp_dir / "file.txt"
+        self.assertFalse(file.exists())
+
         expected_text = "1234"
 
-        with TemporaryDirectory() as tmp_dir:
-            tmp_dir_path = Path(tmp_dir)
+        file.write_text(expected_text, encoding="utf-8")
+        self.assertTrue(file.exists())
 
-            file = tmp_dir_path / "file.txt"
-            self.assertFalse(file.exists())
-
-            file.write_text(expected_text, encoding="utf-8")
-            self.assertTrue(file.exists())
-
-            actual_text = io_util.read_file_as_text(file)
+        actual_text = io_util.read_file_as_text(file)
 
         self.assertEqual(expected_text, actual_text)
 
 
-class ReadFileAsDataTest(TestCase):
+class ReadFileAsDataTest(TempDirTestBase):
     """Unit-tests for the ``io_util.read_file_data`` method."""
+
+    def setUp(self) -> None:
+        super().setUp()
+
+    def tearDown(self) -> None:
+        super().tearDown()
 
     @patch("gitignore_builder.io_util.read_file_as_text", autospec=True)
     def test_returns_none_on_read_text_error(self, mock_read_text: MagicMock):
@@ -94,20 +98,17 @@ class ReadFileAsDataTest(TestCase):
     def test_returns_none_on_parse_data_error(self, mock_parse_data: MagicMock):
         mock_parse_data.return_value = None
         text = dedent("""\
-                a:
-                - 1
-                - 2
-                b:
-                - 3
-                - 4
-                """)
+            a:
+            - 1
+            - 2
+            b:
+            - 3
+            - 4
+            """)
 
-        with TemporaryDirectory() as tmp_dir:
-            tmp_dir_path = Path(tmp_dir)
-            file = tmp_dir_path / "file.txt"
-            file.write_text(text, encoding="utf-8")
-
-            data = io_util.read_file_as_data(file)
+        file = self.temp_dir / "file.txt"
+        file.write_text(text, encoding="utf-8")
+        data = io_util.read_file_as_data(file)
         self.assertIsNone(data)
 
     def test_returns_data_if_ok(self):
@@ -120,14 +121,10 @@ class ReadFileAsDataTest(TestCase):
                 - 4
                 """)
 
+        file = self.temp_dir / "file.txt"
+        file.write_text(text, encoding="utf-8")
         expected_data = {"a": [1, 2], "b": [3, 4]}
-
-        with TemporaryDirectory() as tmp_dir:
-            tmp_dir_path = Path(tmp_dir)
-            file = tmp_dir_path / "file.txt"
-            file.write_text(text, encoding="utf-8")
-            actual_data = io_util.read_file_as_data(file)
-
+        actual_data = io_util.read_file_as_data(file)
         self.assertEqual(expected_data, actual_data)
 
 
@@ -146,32 +143,6 @@ class ReadUrlAsTextTest(TestCase):
         self.assertIsNone(io_util.read_url_as_text(url))
 
 
-class TempDirTestBase(TestCase, ABC):
-    """Base class for unit-tests that use temp-dir."""
-
-    temp_dir_path: Optional[Path]
-
-    @abstractmethod
-    def setUp(self) -> None:
-        self.temp_dir = TemporaryDirectory()  # pylint: disable=consider-using-with
-        self.temp_dir_path = Path(self.temp_dir.name)
-
-    @abstractmethod
-    def tearDown(self) -> None:
-        try:
-            rmtree(self.temp_dir_path, ignore_errors=True)
-        except Exception:
-            pass
-
-        self.temp_dir_path = None
-        try:
-            self.temp_dir.cleanup()
-        except Exception:
-            pass
-
-        self.temp_dir = None
-
-
 class WriteTextToFileTest(TempDirTestBase):
     """Unit-tests for the ``io_util.write_text_to_file`` method."""
 
@@ -182,7 +153,7 @@ class WriteTextToFileTest(TempDirTestBase):
         super().tearDown()
 
     def test_creates_parent_dir_if_missing(self):
-        folder = self.temp_dir_path / "missing_dir"
+        folder = self.temp_dir / "missing_dir"
         self.assertFalse(folder.exists())
 
         text = ""
@@ -193,7 +164,41 @@ class WriteTextToFileTest(TempDirTestBase):
 
     def test_writes_the_text_if_ok(self):
         expected_text = "1234"
-        file = self.temp_dir_path / "file.txt"
+        file = self.temp_dir / "file.txt"
         io_util.write_text_to_file(expected_text, file)
+        actual_text = file.read_text(encoding="utf-8")
+        self.assertEqual(expected_text, actual_text)
+
+    def test_raises_on_error(self):
+        text = object()
+        file = self.temp_dir / "file.txt"
+        with self.assertRaises(Exception):
+            io_util.write_text_to_file(text, file)  # noqa
+
+
+class WriteDataToFileTest(TempDirTestBase):
+    """Unit-tests for the ``io_util.write_datat_to_file`` method."""
+
+    def setUp(self) -> None:
+        super().setUp()
+
+    def tearDown(self) -> None:
+        super().tearDown()
+
+    def test_writes_the_data_if_ok(self):
+        data = {"a": [1, 2], "b": [3, 4]}
+        file = self.temp_dir / "file.txt"
+
+        io_util.write_data_to_file(data, file)
+
+        expected_text = dedent("""\
+            a:
+            - 1
+            - 2
+            b:
+            - 3
+            - 4
+            """)
+
         actual_text = file.read_text(encoding="utf-8")
         self.assertEqual(expected_text, actual_text)
