@@ -2,7 +2,7 @@
 """
 from typing import List
 
-from gitignore_builder.util import url_to_text
+from gitignore_builder.io_util import read_url_as_text
 
 SEPARATOR_LINE_LENGTH = 120
 SEPARATOR_FILL_CHAR = "="
@@ -83,6 +83,6 @@ def append_section(lines: List[str], section_text: str, section_title=""):
 def append_url(lines: List[str], url: str, section_title=""):
     """Retrieves text from the URL and appends it as section to the list."""
 
-    section_text = url_to_text(url)
+    section_text = read_url_as_text(url)
     if section_text:
         append_section(lines, section_text, section_title)

@@ -4,7 +4,8 @@ from unittest.mock import MagicMock
 from unittest.mock import call
 from unittest.mock import patch
 
-from ddt import ddt, data
+from ddt import data
+from ddt import ddt
 
 from gitignore_builder.builder import SEPARATOR_FILL_CHAR
 from gitignore_builder.builder import SEPARATOR_LINE_LENGTH
@@ -232,7 +233,7 @@ class AppendUrlTestCase(TestCase):
     """Unit-tests for the ``builder.append_url`` method."""
 
     @patch("gitignore_builder.builder.append_section", autospec=True)
-    @patch("gitignore_builder.builder.url_to_text", autospec=True)
+    @patch("gitignore_builder.builder.read_url_as_text", autospec=True)
     def test_append_url_does_not_append_when_no_url_contents(
             self,
             mock_url_to_text: MagicMock,
@@ -248,7 +249,7 @@ class AppendUrlTestCase(TestCase):
         self.assertListEqual(expected_calls, actual_calls)
 
     @patch("gitignore_builder.builder.append_section", autospec=True)
-    @patch("gitignore_builder.builder.url_to_text", autospec=True)
+    @patch("gitignore_builder.builder.read_url_as_text", autospec=True)
     def test_append_url_append_when_url_contents(
             self,
             mock_url_to_text: MagicMock,
