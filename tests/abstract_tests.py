@@ -4,8 +4,11 @@ from abc import ABC, abstractmethod
 from pathlib import Path
 from shutil import rmtree
 from tempfile import TemporaryDirectory
-from typing import Optional
+from typing import Optional, List, Union, Sequence, IO, Mapping, Any
 from unittest import TestCase
+
+from click import BaseCommand
+from click.testing import Result, CliRunner
 
 _log = logging.getLogger(__name__)
 _log.addHandler(logging.NullHandler())
@@ -47,3 +50,42 @@ class TempDirTestBase(TestCase, ABC):
                 )
 
         self.temp_dir = None
+
+
+class CliCommandTestBase(TempDirTestBase, ABC):
+    """Base class for CLI-related unit-tests."""
+
+    args: Optional[List[str]]
+    result: Optional[Result]
+    runner: Optional[CliRunner]
+
+    def setUp(self) -> None:
+        super().setUp()
+        self.args = None
+        self.result = None
+        self.runner = CliRunner()
+
+    def tearDown(self) -> None:
+        self.runner = None
+        self.result = None
+        self.args = None
+        super().tearDown()
+
+    @property
+    @abstractmethod
+    def command(self) -> BaseCommand:
+        pass  # no cov
+
+    def invoke(
+            self,
+            args: Optional[Union[str, Sequence[str]]] = None,
+            input: Optional[Union[str, bytes, IO]] = None,  # pylint: disable=redefined-builtin
+            env: Optional[Mapping[str, Optional[str]]] = None,
+            catch_exceptions: bool = True,
+            color: bool = False,
+            **extra: Any,
+    ) -> Result:
+        self.result = self.runner.invoke(
+            self.command, args, input, env, catch_exceptions, color, **extra
+        )
+        return self.result
