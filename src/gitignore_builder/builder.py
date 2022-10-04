@@ -2,6 +2,8 @@
 """
 from typing import List
 
+import click
+
 from gitignore_builder.io_util import read_url_as_text
 
 SEPARATOR_LINE_LENGTH = 120
@@ -86,3 +88,16 @@ def append_url(lines: List[str], url: str, section_title=""):
     section_text = read_url_as_text(url)
     if section_text:
         append_section(lines, section_text, section_title)
+
+
+def build_gitignore_contents(urls: List[str]) -> str:
+    """Build the contents of a single .gitignore file from several URLs."""
+
+    lines = []
+
+    with click.progressbar(urls) as urls_progress:
+        for url in urls_progress:
+            title = f"source: {url}"
+            append_url(lines, url, title)
+
+    return "\n".join(lines)
