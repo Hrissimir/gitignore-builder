@@ -1,14 +1,22 @@
 """This module defines common abstract base classes."""
 import logging
-from abc import ABC, abstractmethod
+from abc import ABC
+from abc import abstractmethod
 from pathlib import Path
 from shutil import rmtree
 from tempfile import TemporaryDirectory
-from typing import Optional, List, Union, Sequence, IO, Mapping, Any
+from typing import IO
+from typing import Any
+from typing import List
+from typing import Mapping
+from typing import Optional
+from typing import Sequence
+from typing import Union
 from unittest import TestCase
 
 from click import BaseCommand
-from click.testing import Result, CliRunner
+from click.testing import CliRunner
+from click.testing import Result
 
 _log = logging.getLogger(__name__)
 _log.addHandler(logging.NullHandler())
@@ -23,31 +31,27 @@ class TempDirTestBase(TestCase, ABC):
     def setUp(self) -> None:
         self._temp_dir = TemporaryDirectory()  # pylint: disable=consider-using-with
         self.temp_dir = Path(self._temp_dir.name)
+        self.temp_dir.mkdir(parents=True, exist_ok=True)
         _log.debug("setUp - created temp-dir: '%s'", self.temp_dir)
 
     @abstractmethod
     def tearDown(self) -> None:
-
         try:
             _log.debug("tearDown - performing TemporaryDirectory cleanup...")
             self._temp_dir.cleanup()
             _log.debug("tearDown - ...DONE!")
-        except Exception as e:
-            _log.warning(
-                "tearDown - error during TemporaryDirectory cleanup: '%s'", e
-            )
+        except Exception as e:  # no cov
+            _log.warning("tearDown - error during TemporaryDirectory cleanup: '%s'", e)
 
         self._temp_dir = None
 
-        if self.temp_dir.exists():
+        if self.temp_dir.exists():  # no cov
             try:
                 _log.debug("tearDown - deleting temp-dir...")
                 rmtree(self.temp_dir, ignore_errors=True)
                 _log.debug("tearDown - ...DONE!")
             except Exception as e:
-                _log.warning(
-                    "tearDown - error while deleting temp-dir: '%s'", e
-                )
+                _log.warning("tearDown - error while deleting temp-dir: '%s'", e)
 
         self.temp_dir = None
 
@@ -77,15 +81,17 @@ class CliCommandTestBase(TempDirTestBase, ABC):
         pass  # no cov
 
     def invoke(
-            self,
-            args: Optional[Union[str, Sequence[str]]] = None,
-            input: Optional[Union[str, bytes, IO]] = None,  # pylint: disable=redefined-builtin
-            env: Optional[Mapping[str, Optional[str]]] = None,
-            catch_exceptions: bool = True,
-            color: bool = False,
-            **extra: Any,
+        self,
+        args: Optional[Union[str, Sequence[str]]] = None,
+        input_: Optional[
+            Union[str, bytes, IO]
+        ] = None,  # pylint: disable=redefined-builtin
+        env: Optional[Mapping[str, Optional[str]]] = None,
+        catch_exceptions: bool = True,
+        color: bool = False,
+        **extra: Any,
     ) -> Result:
         self.result = self.runner.invoke(
-            self.command, args, input, env, catch_exceptions, color, **extra
+            self.command, args, input_, env, catch_exceptions, color, **extra
         )
         return self.result

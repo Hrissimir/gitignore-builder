@@ -56,9 +56,7 @@ def append_line(lines: List[str], line: str):
 def format_separator_line(title: str) -> str:
     """Returns a commented, fixed-length line with the title centered."""
 
-    return "# " + f" {title} ".center(
-        (SEPARATOR_LINE_LENGTH - 2), SEPARATOR_FILL_CHAR
-    )
+    return "# " + f" {title} ".center((SEPARATOR_LINE_LENGTH - 2), SEPARATOR_FILL_CHAR)
 
 
 def append_separator_line(lines: List[str], title: str):

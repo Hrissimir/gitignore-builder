@@ -8,10 +8,38 @@ click = "*"
 requests = "*"
 
 [dev-packages]
-coverage = {extras = ["toml"], version = "*"}
+packaging = "*"
+mccabe = "*"
+isort = "*"
+pylint = "*"
+coverage = { extras = ["toml"], version = "*" }
 pytest = "*"
 pytest-cov = "*"
-keyring = "*"
-twine = "*"
+ddt = "*"
+black = "*"
+blacken-docs = "*"
+pycodestyle = "*"
+pyflakes = "*"
+flake8 = "*"
+flake8-builtins = "*"
+flake8-comprehensions = "*"
+virtualenv = "*"
+pre-commit = "*"
+pre-commit-hooks = "*"
+hatchling = "*"
 hatch = "*"
 gitignore-builder = {editable = true, path = "."}
+
+[scripts]
+clean = 'python -c "import shutil;shutil.rmtree(\"dist\", True);shutil.rmtree(\"site\", True)"'
+code-lint = "hatch run style:check"
+code-format = "hatch run style:fmt"
+project-tests = "hatch run cov"
+project-build = "hatch build"
+docs-build = "hatch run docs:build"
+docs-serve = "hatch run docs:serve"
+publish-to-test = "hatch publish --repo test --user __token__"
+publish-to-main = "hatch publish --repo main --user __token__"
+where-hatch-python = "hatch run where-py"
+where-pipenv-python = "python -c \"import sys;print(sys.executable)\""
+wipe-hatch-envs = "hatch env prune"

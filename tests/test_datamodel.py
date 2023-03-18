@@ -6,11 +6,11 @@ from unittest.mock import MagicMock
 from unittest.mock import call
 from unittest.mock import patch
 
+from gitignore_builder.datamodel import _DEFAULT_RECIPES as DEFAULT_RECIPES
+from gitignore_builder.datamodel import _DEFAULT_TEMPLATES as DEFAULT_TEMPLATES
 from gitignore_builder.datamodel import APP_NAME
 from gitignore_builder.datamodel import RECIPES_FILENAME
 from gitignore_builder.datamodel import TEMPLATES_FILENAME
-from gitignore_builder.datamodel import _DEFAULT_RECIPES as DEFAULT_RECIPES
-from gitignore_builder.datamodel import _DEFAULT_TEMPLATES as DEFAULT_TEMPLATES
 from gitignore_builder.datamodel import get_config_dir
 from gitignore_builder.datamodel import get_recipe_urls
 from gitignore_builder.datamodel import get_recipes
@@ -24,7 +24,6 @@ from gitignore_builder.datamodel import load_templates
 
 
 class ConfigApiTest(TestCase):
-
     @patch("platformdirs.user_config_path", autospec=True)
     def test_get_config_dir(self, mock_get_user_config_path: MagicMock):
         with TemporaryDirectory() as temp_dir:
@@ -64,7 +63,7 @@ class ConfigApiTest(TestCase):
 
     @patch("gitignore_builder.datamodel.get_templates_file", autospec=True)
     def test_load_templates_initializes_the_file_when_missing(
-            self, mock_get_templates_file: MagicMock
+        self, mock_get_templates_file: MagicMock
     ):
         with TemporaryDirectory() as temp_dir:
             temp_dir_path = Path(temp_dir)
@@ -77,7 +76,8 @@ class ConfigApiTest(TestCase):
 
     @patch("gitignore_builder.datamodel.get_recipes_file", autospec=True)
     def test_load_recipes_initializes_the_file_when_missing(
-            self, mock_get_recipes_file: MagicMock,
+        self,
+        mock_get_recipes_file: MagicMock,
     ):
         with TemporaryDirectory() as temp_dir:
             temp_dir_path = Path(temp_dir)
@@ -91,7 +91,7 @@ class ConfigApiTest(TestCase):
 
     @patch("gitignore_builder.datamodel.get_templates_file", autospec=True)
     def test_load_templates_reads_the_file_when_existing(
-            self, mock_get_templates_file: MagicMock
+        self, mock_get_templates_file: MagicMock
     ):
         expected_templates = DEFAULT_TEMPLATES
 
@@ -113,7 +113,7 @@ class ConfigApiTest(TestCase):
 
     @patch("gitignore_builder.datamodel.get_recipes_file", autospec=True)
     def test_load_recipes_reads_the_file_when_existing(
-            self, mock_get_recipes_file: MagicMock
+        self, mock_get_recipes_file: MagicMock
     ):
         expected_recipes = DEFAULT_RECIPES
 
@@ -137,10 +137,7 @@ class GetConfigDirTestCase(TestCase):
     """Unit-tests for the ``config.get_config_dir`` method."""
 
     @patch("platformdirs.user_config_path", autospec=True)
-    def test_returns_user_config_path(
-            self,
-            mock_get_platform_dir: MagicMock
-    ):
+    def test_returns_user_config_path(self, mock_get_platform_dir: MagicMock):
         mock_dir = MagicMock(spec=Path)
         mock_get_platform_dir.return_value = mock_dir
         expected = mock_dir
@@ -153,22 +150,14 @@ class GetConfigDirTestCase(TestCase):
 
 
 class GetRecipeUrlsTest(TestCase):
-
     @patch("gitignore_builder.datamodel.get_templates")
     @patch("gitignore_builder.datamodel.get_recipes")
     def test_returns_urls_if_ok(
-            self,
-            mock_get_recipes: MagicMock,
-            mock_get_templates: MagicMock
+        self, mock_get_recipes: MagicMock, mock_get_templates: MagicMock
     ):
-        mock_recipes = {
-            "java": ["eclipse", "java-lang"]
-        }
+        mock_recipes = {"java": ["eclipse", "java-lang"]}
 
-        mock_templates = {
-            "eclipse": ["eclipse-URL"],
-            "java-lang": ["java-lang-URL"]
-        }
+        mock_templates = {"eclipse": ["eclipse-URL"], "java-lang": ["java-lang-URL"]}
 
         mock_get_recipes.return_value = mock_recipes
         mock_get_templates.return_value = mock_templates
@@ -182,10 +171,7 @@ class GetRecipesFileTestCase(TestCase):
     """Unit-tests for the ``datamodel.get_recipes_file`` method."""
 
     @patch("gitignore_builder.datamodel.get_config_dir", autospec=True)
-    def test_returns_file_in_app_config_dir(
-            self,
-            mock_get_config_dir: MagicMock
-    ):
+    def test_returns_file_in_app_config_dir(self, mock_get_config_dir: MagicMock):
         with TemporaryDirectory() as temp_dir:
             temp_dir_path = Path(temp_dir)
             mock_get_config_dir.return_value = temp_dir_path
@@ -199,10 +185,7 @@ class GetTemplatesFileTestCase(TestCase):
     """Unit-tests for the ``datamodel.get_templates_file`` method."""
 
     @patch("gitignore_builder.datamodel.get_config_dir", autospec=True)
-    def test_returns_file_in_app_config_dir(
-            self,
-            mock_get_config_dir: MagicMock
-    ):
+    def test_returns_file_in_app_config_dir(self, mock_get_config_dir: MagicMock):
         with TemporaryDirectory() as temp_dir:
             temp_dir_path = Path(temp_dir)
             mock_get_config_dir.return_value = temp_dir_path

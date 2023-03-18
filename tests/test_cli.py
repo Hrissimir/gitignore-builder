@@ -3,8 +3,9 @@ import logging
 from unittest.mock import MagicMock
 from unittest.mock import patch
 
-from .abstract_tests import CliCommandTestBase
 from gitignore_builder import cli
+
+from .abstract_tests import CliCommandTestBase
 
 _log = logging.getLogger(__name__)
 _log.addHandler(logging.NullHandler())
@@ -27,10 +28,8 @@ class CliTest(CliCommandTestBase):
 
     @patch("gitignore_builder.datamodel.get_templates_file")
     @patch("gitignore_builder.datamodel.get_recipes_file")
-    def test_config_prints_paths(
-            self,
-            mock_get_recipes_file: MagicMock,
-            mock_get_templates_file: MagicMock
+    def test_files_prints_paths(
+        self, mock_get_recipes_file: MagicMock, mock_get_templates_file: MagicMock
     ):
         mock_recipes_file = self.temp_dir / "recipes.yaml"
         mock_get_recipes_file.return_value = mock_recipes_file
@@ -38,7 +37,7 @@ class CliTest(CliCommandTestBase):
         mock_templates_file = self.temp_dir / "templates.yaml"
         mock_get_templates_file.return_value = mock_templates_file
 
-        self.invoke(["--config"])
+        self.invoke(["--files"])
         self.assertIn(str(mock_recipes_file), self.result.output)
         self.assertIn(str(mock_templates_file), self.result.output)
 

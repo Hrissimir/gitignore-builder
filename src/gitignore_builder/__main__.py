@@ -4,7 +4,7 @@
 # SPDX-License-Identifier: MIT
 import sys  # pragma: no cover
 
-if __name__ == '__main__':  # pragma: no cover
+if __name__ == "__main__":  # pragma: no cover
     from .cli import gitignore_builder
 
     sys.exit(gitignore_builder())  # pylint: disable=no-value-for-parameter

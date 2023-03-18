@@ -5,12 +5,15 @@ build-backend = "hatchling.build"
 [project]
 name = "gitignore-builder"
 description = 'Build the contents of a single .gitignore from several sources.'
-readme = "README.md"
+readme = { "file" = "README.md", "content-type" = "text/markdown" }
 requires-python = ">=3.7"
 license = "MIT"
 keywords = []
 authors = [
   { name = "Hrissimir", email = "hrisimir.dakov@gmail.com" },
+]
+maintainers = [
+    { name = "Hrissimir", email = "hrisimir.dakov@gmail.com" },
 ]
 classifiers = [
   "Development Status :: 4 - Beta",
@@ -42,19 +45,72 @@ gitignore-builder = "gitignore_builder.cli:gitignore_builder"
 [tool.hatch.version]
 path = "src/gitignore_builder/__about__.py"
 
+[tool.hatch.build]
+ignore-vcs = false
+only-packages = true
+reproducible = true
+skip-excluded-dirs = true
+sources = ["src", "tests"]
+dev-mode-dirs = ["src", "tests"]
+packages = ["src/gitignore_builder"]
+
 [tool.hatch.envs.default]
 dependencies = [
-  "coverage[toml]",
-  "ddt",
+  "packaging",
+  "mccabe",
+  "isort",
   "pylint",
+  "coverage[toml]",
   "pytest",
   "pytest-cov",
-  "keyring",
-  "twine",
+  "ddt",
 ]
+
 [tool.hatch.envs.default.scripts]
-cov = "pytest --cov-report=term-missing --cov-config=pyproject.toml --cov=src/gitignore_builder --cov=tests"
-no-cov = "cov --no-cov"
+cov = "pytest --cov-report=term-missing --cov-config=pyproject.toml --cov=src/gitignore_builder --cov=tests {args}"
+no-cov = "cov --no-cov {args}"
+where-py = "python -c \"import sys;print(sys.executable)\""
+
+[tool.hatch.envs.docs]
+detached = true
+skip-install = true
+dependencies = [
+  "mkdocs>=1.4.1",
+  "markdown>=3.3.7",
+  "markups>=3.1.3",
+  "pyenchant>=3.2.2",
+  "docutils>=0.19",
+]
+
+[tool.hatch.envs.docs.scripts]
+build = "mkdocs build --clean --strict"
+serve = "mkdocs serve --dev-addr localhost:8000"
+
+[tool.hatch.envs.style]
+detached = true
+skip-install = true
+template = "default"
+extra-dependencies = [
+  "black",
+  "blacken-docs",
+  "pycodestyle",
+  "pyflakes",
+  "flake8",
+  "flake8-builtins",
+  "flake8-comprehensions",
+]
+
+[tool.hatch.envs.style.scripts]
+check = [
+  "pylint --verbose ./src ./tests",
+  "flake8 --verbose --config=.flake8 --require-plugins=mccabe,pyflakes,pycodestyle,flake8-builtins,flake8-comprehensions ./src ./tests",
+  "black --verbose --config=.black --check --diff ./src ./tests",
+  "isort --verbose --settings-file=.isort.cfg --check-only --diff  ./src ./tests",
+]
+fmt = [
+  "isort --verbose --settings-file=.isort.cfg ./src ./tests",
+  "black --verbose --config=.black ./src ./tests",
+]
 
 [[tool.hatch.envs.test.matrix]]
 python = ["37", "38", "39", "310", "311"]
@@ -62,13 +118,25 @@ python = ["37", "38", "39", "310", "311"]
 [tool.coverage.run]
 branch = true
 parallel = true
+source = [
+  "src/",
+  "tests/"
+]
 omit = [
-  "src/gitignore_builder/__about__.py",
+  "*__about__.py",
+  "*__init__.py"
 ]
 
 [tool.coverage.report]
 exclude_lines = [
+  "pragma: no cover",
+  "pragma: no cov",
   "no cov",
+  "def __repr__",
   "if __name__ == .__main__.:",
   "if TYPE_CHECKING:",
+  "if 0:",
+  'if self\.debug',
+  "raise AssertionError",
+  "raise NotImplementedError"
 ]

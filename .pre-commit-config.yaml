@@ -1,0 +1,94 @@
+# See https://pre-commit.com for more information
+# See https://pre-commit.com/hooks.html for more hooks
+default_language_version:
+  python: python3
+exclude: '^tests/samples/.*$'
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.4.0
+    hooks:
+      - id: check-added-large-files
+      - id: check-ast
+      - id: check-builtin-literals
+      - id: check-case-conflict
+      - id: check-docstring-first
+      - id: check-json
+      - id: check-merge-conflict
+      - id: check-shebang-scripts-are-executable
+      - id: check-symlinks
+      - id: check-toml
+      - id: check-vcs-permalinks
+      - id: check-xml
+      - id: check-yaml
+      - id: destroyed-symlinks
+      - id: detect-private-key
+      - id: end-of-file-fixer
+      - id: fix-byte-order-marker
+      - id: fix-encoding-pragma
+        args: [ '--remove' ]
+      - id: mixed-line-ending
+        args: [ '--fix=auto' ]
+      - id: name-tests-test
+        args: [ '--pytest-test-first' ]
+      - id: pretty-format-json
+        args: [
+          '--autofix',
+          '--indent 4',
+          '--no-ensure-ascii',
+          '--no-sort-keys'
+        ]
+      - id: trailing-whitespace
+        args: [ '--markdown-linebreak-ext=*' ]
+  - repo: local
+    hooks:
+      - id: pylint
+        name: pylint
+        entry: pylint
+        language: system
+        types: [ python ]
+        args:
+          [
+            '--verbose',
+            '--rcfile=.pylintrc',
+            '-rn', # Only display messages
+            '-sn', # Don't display the score
+          ]
+  - repo: https://github.com/PyCQA/flake8
+    rev: 6.0.0
+    hooks:
+      - id: flake8
+        additional_dependencies: [
+          mccabe,
+          pyflakes,
+          pycodestyle,
+          flake8-builtins,
+          flake8-comprehensions,
+        ]
+        args: [
+          '--verbose',
+          '--config=.flake8',
+          '--require-plugins=mccabe,pyflakes,pycodestyle,flake8-builtins,flake8-comprehensions',
+        ]
+  - repo: https://github.com/PyCQA/isort
+    rev: 5.12.0
+    hooks:
+      - id: isort
+        args: [
+          '--verbose',
+          '--settings-file=.isort.cfg',
+        ]
+  - repo: https://github.com/psf/black
+    rev: 23.1.0
+    hooks:
+      - id: black
+        args: [
+          '--verbose',
+          '--config=.black',
+          '--diff',
+        ]
+  - repo: https://github.com/asottile/blacken-docs
+    rev: 1.13.0
+    hooks:
+      - id: blacken-docs
+        additional_dependencies:
+          - black==23.1.0

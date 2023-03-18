@@ -67,7 +67,7 @@ _DEFAULT_TEMPLATES = {
         "https://github.com/github/gitignore/raw/main/Python.gitignore",
         "https://github.com/github/gitignore/raw/main/community/Python/Nikola.gitignore",
         "https://github.com/pyscaffold/pyscaffold/raw/master/src/pyscaffold/templates/gitignore.template",
-    ]
+    ],
 }
 
 _DEFAULT_RECIPES = {
@@ -79,7 +79,7 @@ _DEFAULT_RECIPES = {
         "eclipse",
         "netbeans",
         "intellij",
-        "java-lang"
+        "java-lang",
     ],
     "java": [
         "linux",
@@ -89,7 +89,7 @@ _DEFAULT_RECIPES = {
         "netbeans",
         "intellij",
         "visual-studio",
-        "java-lang"
+        "java-lang",
     ],
     "python": [
         "linux",
@@ -99,8 +99,8 @@ _DEFAULT_RECIPES = {
         "jupyter-notebooks",
         "visual-studio",
         "visual-studio-code",
-        "python-lang"
-    ]
+        "python-lang",
+    ],
 }
 
 _recipes: Optional[dict] = None
@@ -237,9 +237,7 @@ def get_recipe_templates(name: str) -> Optional[List[str]]:
         return recipes[name]
     except KeyError:
         _log.warning(
-            "Bad recipe name: '%s'! Valid recipe names: '%s'",
-            name,
-            get_recipe_names()
+            "Bad recipe name: '%s'! Valid recipe names: '%s'", name, get_recipe_names()
         )
     except Exception as e:
         _log.error("Error while getting recipe templates! Details: %s", e)
@@ -277,7 +275,7 @@ def get_template_urls(name: str) -> Optional[List[str]]:
         _log.warning(
             "Bad template name: '%s'! Valid template names: '%s'",
             name,
-            get_template_names()
+            get_template_names(),
         )
     except Exception as e:
         _log.error("Error while getting template URLs! Details: %s", e)

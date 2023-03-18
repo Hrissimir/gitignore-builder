@@ -8,11 +8,22 @@
 [MASTER]
 
 # Files or directories to be skipped. They should be base names, not paths.
-ignore=third_party
+ignore=CVS,
+       .git,
+       .github,
+       .hatch,
+       .pytest_cache,
+       .venv,
+       dist,
+       docs,
+       htmlcov,
+       logs,
+       site,
+       third_party
 
 # Files or directories matching the regex patterns are skipped. The regex
 # matches against base names, not paths.
-ignore-patterns=
+ignore-patterns=^\.#
 
 # Pickle collected data for later comparisons.
 persistent=no
@@ -61,6 +72,7 @@ disable=abstract-method,
         buffer-builtin,
         c-extension-no-member,
         consider-using-enumerate,
+        consider-using-f-string,
         cmp-builtin,
         cmp-method,
         coerce-builtin,
@@ -92,6 +104,7 @@ disable=abstract-method,
         map-builtin-not-iterating,
         misplaced-comparison-constant,
         missing-function-docstring,
+        missing-module-docstring,
         metaclass-assignment,
         next-method-called,
         next-method-defined,
@@ -176,7 +189,25 @@ evaluation=10.0 - ((float(5 * error + warning + refactor + convention) / stateme
 [BASIC]
 
 # Good variable names which should always be accepted, separated by a comma
-good-names=main,_
+good-names=b,
+           d,
+           e,
+           i,
+           j,
+           k,
+           o,
+           p,
+           t,
+           df,
+           dr,
+           dt,
+           ex,
+           ts,
+           Run,
+           _,
+           main,
+           testMethod,
+           maxDiff
 
 # Bad variable names which should always be refused, separated by a comma
 bad-names=
@@ -217,14 +248,14 @@ inlinevar-rgx=^[a-z][a-z0-9_]*$
 class-rgx=^_?[A-Z][a-zA-Z0-9]*$
 
 # Regular expression matching correct module names
-module-rgx=^(_?[a-z][a-z0-9_]*|__init__)$
+module-rgx=^(_?[a-z][a-z0-9_]*|__init__|__about__|__main__)$
 
 # Regular expression matching correct method names
 method-rgx=(?x)^(?:(?P<exempt>_[a-z0-9_]+__|runTest|setUp|tearDown|setUpTestCase|tearDownTestCase|setupSelf|tearDownClass|setUpClass|(test|assert)_*[A-Z0-9][a-zA-Z0-9_]*|next)|(?P<camel_case>_{0,2}[A-Z][a-zA-Z0-9_]*)|(?P<snake_case>_{0,2}[a-z][a-z0-9_]*))$
 
 # Regular expression which should only match function or class names that do
 # not require a docstring.
-no-docstring-rgx=(__.*__|main|test.*|.*test|.*Test)$
+no-docstring-rgx=(__.*__|_.*|main|test.*|.*test|.*Test)$
 
 # Minimum line length for functions/classes that require docstrings, shorter
 # ones are exempt.
@@ -251,7 +282,7 @@ ignored-modules=
 # List of class names for which member attributes should not be checked (useful
 # for classes with dynamically set attributes). This supports the use of
 # qualified names.
-ignored-classes=optparse.Values,thread._local,_thread._local
+ignored-classes=optparse.Values,thread._local,_thread._local,argparse.Namespace
 
 # List of members which are set dynamically and missed by pylint inference
 # system, and so shouldn't trigger E1101 when accessed. Python regular
@@ -274,7 +305,7 @@ ignore-long-lines=(?x)(
 
 # Allow the body of an if to be on the same line as the test if there is no
 # else.
-single-line-if-stmt=yes
+single-line-if-stmt=no
 
 # Maximum number of lines in a module
 max-module-lines=99999
@@ -309,7 +340,7 @@ init-import=no
 
 # A regular expression matching the name of dummy variables (i.e. expectedly
 # not used).
-dummy-variables-rgx=^\*{0,2}(_$|unused_|dummy_)
+dummy-variables-rgx=^\*{0,2}(_$|ctx|unused_|ignored_|dummy_)
 
 # List of additional names supposed to be defined in builtins. Remember that
 # you should avoid to define new builtins when possible.
@@ -365,6 +396,11 @@ spelling-store-unknown-words=no
 
 [IMPORTS]
 
+# List of modules that can be imported at any level, not just the top level
+# one.
+allow-any-import-level=__about__,
+                       __version__
+
 # Deprecated modules which should not be used, separated by a comma
 deprecated-modules=regsub,
                    TERMIOS,
@@ -402,7 +438,8 @@ analyse-fallback-blocks=no
 # List of method names used to declare (i.e. assign) instance attributes.
 defining-attr-methods=__init__,
                       __new__,
-                      setUp
+                      setUp,
+                      __post_init__
 
 # List of member names, which should be excluded from the protected access
 # warning.
@@ -424,6 +461,5 @@ valid-metaclass-classmethod-first-arg=mcs
 
 # Exceptions that will emit a warning when being caught. Defaults to
 # "Exception"
-overgeneral-exceptions=StandardError,
-                       Exception,
-                       BaseException
+overgeneral-exceptions=builtins.StandardError,
+                       builtins.BaseException

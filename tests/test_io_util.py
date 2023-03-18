@@ -6,8 +6,9 @@ from unittest.mock import patch
 
 import requests
 
-from .abstract_tests import TempDirTestBase
 from gitignore_builder import io_util
+
+from .abstract_tests import TempDirTestBase
 
 
 class FormatDataToYamlTest(TestCase):
@@ -22,14 +23,16 @@ class FormatDataToYamlTest(TestCase):
 
     def test_returns_string_if_ok(self):
         data = {"a": [1, 2], "b": [3, 4]}
-        expected = dedent("""\
+        expected = dedent(
+            """\
             a:
             - 1
             - 2
             b:
             - 3
             - 4
-            """)
+            """
+        )
         actual = io_util.format_data_to_yaml(data)
         self.assertEqual(expected, actual)
 
@@ -41,14 +44,16 @@ class ParseDataFromYamlTest(TestCase):
         self.assertIsNone(io_util.parse_data_from_yaml(None))  # noqa
 
     def test_returns_data_if_ok(self):
-        text = dedent("""\
+        text = dedent(
+            """\
             a:
             - 1
             - 2
             b:
             - 3
             - 4
-            """)
+            """
+        )
         expected = {"a": [1, 2], "b": [3, 4]}
         actual = io_util.parse_data_from_yaml(text)
         self.assertEqual(expected, actual)
@@ -97,14 +102,16 @@ class ReadFileAsDataTest(TempDirTestBase):
     @patch("gitignore_builder.io_util.parse_data_from_yaml", autospec=True)
     def test_returns_none_on_parse_data_error(self, mock_parse_data: MagicMock):
         mock_parse_data.return_value = None
-        text = dedent("""\
+        text = dedent(
+            """\
             a:
             - 1
             - 2
             b:
             - 3
             - 4
-            """)
+            """
+        )
 
         file = self.temp_dir / "file.txt"
         file.write_text(text, encoding="utf-8")
@@ -112,14 +119,16 @@ class ReadFileAsDataTest(TempDirTestBase):
         self.assertIsNone(data)
 
     def test_returns_data_if_ok(self):
-        text = dedent("""\
+        text = dedent(
+            """\
                 a:
                 - 1
                 - 2
                 b:
                 - 3
                 - 4
-                """)
+                """
+        )
 
         file = self.temp_dir / "file.txt"
         file.write_text(text, encoding="utf-8")
@@ -191,14 +200,16 @@ class WriteDataToFileTest(TempDirTestBase):
 
         io_util.write_data_to_file(data, file)
 
-        expected_text = dedent("""\
+        expected_text = dedent(
+            """\
             a:
             - 1
             - 2
             b:
             - 3
             - 4
-            """)
+            """
+        )
 
         actual_text = file.read_text(encoding="utf-8")
         self.assertEqual(expected_text, actual_text)

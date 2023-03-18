@@ -13,17 +13,17 @@ CONTEXT_SETTINGS = {
     "help_option_names": ["-h", "--help"],
     "show_default": True,
     "terminal_width": 160,
-    "max_content_width": 160
+    "max_content_width": 160,
 }
 
 datamodel.init()
 
 
-def show_files(ctx, _, value):
+def show_files(ctx, ignored_, value):
     if not value or ctx.resilient_parsing:
         return
-    click.echo(f"recipes file: {gitignore_builder.datamodel.get_recipes_file()}")
-    click.echo(f"templates file: {gitignore_builder.datamodel.get_templates_file()}")
+    click.echo(f"recipes file: {datamodel.get_recipes_file()}")
+    click.echo(f"templates file: {datamodel.get_templates_file()}")
     ctx.exit()
 
 
@@ -35,7 +35,7 @@ def show_files(ctx, _, value):
     callback=show_files,
     expose_value=False,
     is_eager=True,
-    help="Show paths to app data-files and exit."
+    help="Show paths to app data-files and exit.",
 )
 @click.argument("recipe", type=click.Choice(datamodel.get_recipe_names()))
 @click.argument("output", type=click.File("w"), default="-")

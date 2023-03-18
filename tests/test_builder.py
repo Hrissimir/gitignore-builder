@@ -58,7 +58,7 @@ class ShouldAppendTestCase(TestCase):
             return "*.log"
         elif current_line_type == "unique":
             return "*.tmp"
-        else:
+        else:  # no cov
             raise ValueError(current_line_type)
 
     @classmethod
@@ -71,7 +71,7 @@ class ShouldAppendTestCase(TestCase):
             return ["*.log", "# temp-files"]
         elif last_line_type == "non-comment":
             return ["*.log"]
-        else:
+        else:  # no cov
             raise ValueError(last_line_type)
 
 
@@ -124,7 +124,9 @@ class AppendLineTestCase(TestCase):
         self.assertIn(line, lines)
         self.assertEqual(1, len(lines))
 
-    def test_Given_non_empty_non_comment_line_When_already_present_Then_not_appended(self):
+    def test_Given_non_empty_non_comment_line_When_already_present_Then_not_appended(
+        self,
+    ):
         line = "*.log"
         lines = [line]
         append_line(lines, line)
@@ -159,9 +161,7 @@ class AppendSeparatorLineTestCase(TestCase):
     @patch("gitignore_builder.builder.append_line", autospec=True)
     @patch("gitignore_builder.builder.format_separator_line", autospec=True)
     def test_append_separator_line_calls_format_and_append(
-            self,
-            mock_format: MagicMock,
-            mock_append: MagicMock
+        self, mock_format: MagicMock, mock_append: MagicMock
     ):
         mock_title = MagicMock(spec=str)
         mock_separator = MagicMock(spec=str)
@@ -185,29 +185,22 @@ class AppendSectionTestCase(TestCase):
     @patch("gitignore_builder.builder.append_line", autospec=True)
     @patch("gitignore_builder.builder.append_separator_line", autospec=True)
     def test_append_section_appends_separator_with_title_and_all_text_lines(
-            self,
-            mock_append_separator: MagicMock,
-            mock_append_line: MagicMock
+        self, mock_append_separator: MagicMock, mock_append_line: MagicMock
     ):
         mock_lines = MagicMock(spec=list)
         mock_text = MagicMock(spec=str)
         mock_text_lines_count = 5
-        mock_text_lines = [
-            MagicMock(spec=str)
-            for _
-            in range(mock_text_lines_count)
-        ]
+        mock_text_lines = [MagicMock(spec=str) for _ in range(mock_text_lines_count)]
         mock_text_stripped_lines = [
-            MagicMock(spec=str)
-            for _
-            in range(mock_text_lines_count)
+            MagicMock(spec=str) for _ in range(mock_text_lines_count)
         ]
         mock_split = MagicMock(spec=str.split)
         mock_split.return_value = mock_text_lines
         mock_text.attach_mock(mock_split, "split")
 
-        for mock_line, mock_stripped_line in zip(mock_text_lines,
-                                                 mock_text_stripped_lines):
+        for mock_line, mock_stripped_line in zip(
+            mock_text_lines, mock_text_stripped_lines
+        ):
             mock_line.strip.return_value = mock_stripped_line
 
         mock_title = MagicMock(spec=str)
@@ -215,18 +208,13 @@ class AppendSectionTestCase(TestCase):
 
         expected_append_section_calls = [call(mock_lines, mock_title)]
         actual_append_section_calls = mock_append_separator.mock_calls
-        self.assertListEqual(
-            expected_append_section_calls, actual_append_section_calls
-        )
+        self.assertListEqual(expected_append_section_calls, actual_append_section_calls)
 
-        expected_append_line_calls = [call(mock_lines, line)
-                                      for line
-                                      in mock_text_stripped_lines]
+        expected_append_line_calls = [
+            call(mock_lines, line) for line in mock_text_stripped_lines
+        ]
         actual_append_line_calls = mock_append_line.mock_calls
-        self.assertListEqual(
-            expected_append_line_calls,
-            actual_append_line_calls
-        )
+        self.assertListEqual(expected_append_line_calls, actual_append_line_calls)
 
 
 class AppendUrlTestCase(TestCase):
@@ -235,9 +223,7 @@ class AppendUrlTestCase(TestCase):
     @patch("gitignore_builder.builder.append_section", autospec=True)
     @patch("gitignore_builder.builder.read_url_as_text", autospec=True)
     def test_append_url_does_not_append_when_no_url_contents(
-            self,
-            mock_url_to_text: MagicMock,
-            mock_append_section: MagicMock
+        self, mock_url_to_text: MagicMock, mock_append_section: MagicMock
     ):
         mock_url_to_text.return_value = None
         mock_url = MagicMock(spec=str)
@@ -251,9 +237,7 @@ class AppendUrlTestCase(TestCase):
     @patch("gitignore_builder.builder.append_section", autospec=True)
     @patch("gitignore_builder.builder.read_url_as_text", autospec=True)
     def test_append_url_append_when_url_contents(
-            self,
-            mock_url_to_text: MagicMock,
-            mock_append_section: MagicMock
+        self, mock_url_to_text: MagicMock, mock_append_section: MagicMock
     ):
         mock_url_contents = "# some text"
         mock_url_to_text.return_value = mock_url_contents
